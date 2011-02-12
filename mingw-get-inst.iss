@@ -64,10 +64,10 @@
 ; the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.1-alpha-4"
+#define MyAppVersion "0.1-alpha-5"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
-#define MyCatalogueSnapshotDate "20100909"
+#define MyCatalogueSnapshotDate "20101030"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -175,7 +175,7 @@ begin
       'Regular User Install', 'You have launched this installer as normal (non-Administrator) user.',
       'Shortcuts will be created in your Start Menu and/or Desktop. To install ' +
       'for all users, cancel this installation and relaunch as an Administrator.');
-    end
+    end;
 
   { Create the Update Catalogues Page }
   UpdateCataloguesPage := CreateCustomPage(AdminOrUserPage.ID, 'Repository Catalogues',
@@ -229,7 +229,7 @@ begin
 
   if CheckListBox.Checked[CXX_Index] then begin
     args := args +  'gcc-g++ ';
-  end
+  end;
 
   { FIXME: no java package at present }
   { if CheckListBox.Checked[Java_Index] then begin }
@@ -238,22 +238,22 @@ begin
 
   if CheckListBox.Checked[F_Index] then begin
     args := args +  'gcc-fortran ';
-  end
+  end;
   if CheckListBox.Checked[ObjC_Index] then begin
     args := args +  'gcc-objc ';
-  end
+  end;
   if CheckListBox.Checked[Ada_Index] then begin
     args := args +  'gcc-ada ';
-  end
+  end;
   if CheckListBox.Checked[Msys_Index] then begin
     args := args +  'msys-base ';
-  end
+  end;
   if CheckListBox.Checked[MinGW_DTK_Index] then begin
     args := args +  'mingw-dtk ';
-  end
+  end;
   if CheckListBox.Checked[Msys_Dvlpr_Index] then begin
     args := args +  'msys-dvlpr ';
-  end
+  end;
   Result := args;
 end;
 
@@ -279,10 +279,10 @@ begin
   S := S + 'Installing:' + NewLine;
   if CheckListBox.Checked[C_Index] then begin
     S := S + Space + 'C Compiler' + NewLine;
-  end
+  end;
   if CheckListBox.Checked[CXX_Index] then begin
     S := S + Space + 'C++ Compiler' + NewLine;
-  end
+  end;
 
   { FIXME: no java package at present }
   { if CheckListBox.Checked[Java_Index] then begin }
@@ -291,25 +291,25 @@ begin
 
   if CheckListBox.Checked[F_Index] then begin
     S := S + Space + 'Fortran Compiler' + NewLine;
-  end
+  end;
   if CheckListBox.Checked[ObjC_Index] then begin
     S := S + Space + 'ObjC Compiler' + NewLine;
-  end
+  end;
   if CheckListBox.Checked[Ada_Index] then begin
     S := S + Space + 'Ada Compiler' + NewLine;
-  end
+  end;
 
   { If any of the MSYS-related packages are installed... }
   if CheckMSYSSelected() then begin
     S := S + Space + 'MSYS Basic System' + NewLine;
-  end
+  end;
 
   if CheckListBox.Checked[MinGW_DTK_Index] then begin
     S := S + Space + 'MinGW Developer Toolkit' + NewLine;
-  end
+  end;
   if CheckListBox.Checked[Msys_Dvlpr_Index] then begin
     S := S + Space + 'MSYS System Builder' + NewLine;
-  end
+  end;
   S := S + NewLine;
 
   if CheckUpdateCatalogues() then begin
@@ -318,7 +318,7 @@ begin
   else begin
     S := S + 'Using pre-packaged repository catalogues (' +
          '{#emit MyCatalogueSnapshotDate}' + ')' + NewLine;
-    end
+    end;
   S := S + NewLine;
 
   S := S + MemoDirInfo + NewLine;
