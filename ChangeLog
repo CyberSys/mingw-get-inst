@@ -1,3 +1,14 @@
+2011-02-11  Charles Wilson  <...>
+
+	20110211 release (update mingw-get; remove msys-dvlpr options)
+	* RELEASE_NOTES.txt: Document changes.
+	* mingw-get-inst.iss: Use mingw-get-0.1-alpha-5.1. Update
+	catalogue snapshot date.
+	[Code]: Remove Msys_Dvlpr_Index variable.
+	[CreateTheWizardPages]: Remove code related to MSYS System Builder.
+	[GetMinGWGetArgs]: Ditto.
+	[UpdateReadyMemo]: Ditto.
+
 2010-10-30  Keith Marshall  <...>
 
 	20101030 release (update mingw-get version)

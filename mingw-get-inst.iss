@@ -26,30 +26,23 @@
 ; To build this installer, first download mingw-get itself, and unpack into
 ; the _inst subdirectory of the directory in which this file is located.
 ;
-;   $ V=0.1-mingw32-alpha-4
+;   $ V=0.1-mingw32-alpha-5.1
+;   $ S=http://downloads.sourceforge.net/mingw
 ;   $ rm -rf _inst && mkdir _inst
 ;   $ for f in mingw-get-$V-bin.tar.gz mingw-get-$V-lic.tar.gz pkginfo-$V-bin.tar.gz; do
-;       wget --no-check-certificate $f
+;       wget --no-check-certificate $S/$f
 ;       tar -C _inst -xf $f
 ;     done
-;
-; Then, we need to move some files around.  First, there is a bug in the -lic
-; package:
-;
-;   $ if [ -d _inst/shared ]; then
-;       if [ ! -d _inst/share ]; then
-;         mv _inst/shared _inst/share
-;       else
-;         mv _inst/shared/* _inst/share/
-;         rmdir _inst/shared
-;       fi
-;     fi
 ;
 ; Copy defaults.xml to profile.xml
 ;
 ;   $ pushd _inst/var/lib/mingw-get/data/
 ;   $ cp defaults.xml profile.xml
 ;   $ popd
+;
+; And, for good measure:
+;
+;   $ chmod +x _inst/libexec/mingw-get/mingw-get-0.dll
 ;
 ; Now, you should be able to do the following
 ;
@@ -64,10 +57,10 @@
 ; the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.1-alpha-5"
+#define MyAppVersion "0.1-alpha-5.1"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
-#define MyCatalogueSnapshotDate "20101030"
+#define MyCatalogueSnapshotDate "20110211"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -121,7 +114,6 @@ var
   Ada_Index: Integer;
   Msys_Index: Integer;
   MinGW_DTK_Index: Integer;
-  Msys_Dvlpr_Index: Integer;
 
   AdminOrUserPage: TOutputMsgWizardPage;
   UpdateCataloguesPage: TWizardPage;
@@ -159,8 +151,6 @@ begin
   Msys_Index := CheckListBox.AddCheckBox('MSYS Basic System','', 0, False, True,  False, False, nil);
   MinGW_DTK_Index  := CheckListBox.AddCheckBox('MinGW Developer ToolKit',
                                    'Includes MSYS Basic System', 0, False, True,  False, False, nil);
-  Msys_Dvlpr_Index := CheckListBox.AddCheckBox('MSYS System Builder',
-                                   'Not usually installed',      0, False, True,  False, False, nil);
 
   { Create the Admin or User page }
   if IsAdmin() then begin
@@ -251,17 +241,13 @@ begin
   if CheckListBox.Checked[MinGW_DTK_Index] then begin
     args := args +  'mingw-dtk ';
   end;
-  if CheckListBox.Checked[Msys_Dvlpr_Index] then begin
-    args := args +  'msys-dvlpr ';
-  end;
   Result := args;
 end;
 
 function CheckMSYSSelected: Boolean;
 begin
   Result := CheckListBox.Checked[Msys_Index] or
-            CheckListBox.Checked[MinGW_DTK_Index] or
-            CheckListBox.Checked[Msys_Dvlpr_Index];
+            CheckListBox.Checked[MinGW_DTK_Index];
 end;
 
 function CheckUpdateCatalogues: Boolean;
@@ -306,9 +292,6 @@ begin
 
   if CheckListBox.Checked[MinGW_DTK_Index] then begin
     S := S + Space + 'MinGW Developer Toolkit' + NewLine;
-  end;
-  if CheckListBox.Checked[Msys_Dvlpr_Index] then begin
-    S := S + Space + 'MSYS System Builder' + NewLine;
   end;
   S := S + NewLine;
 
