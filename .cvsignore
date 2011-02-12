@@ -1,0 +1,7 @@
+_inst
+output
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.lzma
+*.swp
