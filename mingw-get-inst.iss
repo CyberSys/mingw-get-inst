@@ -26,7 +26,7 @@
 ; To build this installer, first download mingw-get itself, and unpack into
 ; the _inst subdirectory of the directory in which this file is located.
 ;
-;   $ V=0.1-mingw32-alpha-3
+;   $ V=0.1-mingw32-alpha-4
 ;   $ rm -rf _inst && mkdir _inst
 ;   $ for f in mingw-get-$V-bin.tar.gz mingw-get-$V-lic.tar.gz pkginfo-$V-bin.tar.gz; do
 ;       wget --no-check-certificate $f
@@ -59,12 +59,15 @@
 ; to download the latest copy of all of the published xml manifests.
 ;
 ; NOW, you're ready to compile this installer!
-; Don't forget to rename it with the release date.
+;
+; Don't forget to rename it with the release date, and update
+; the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.1-alpha-3"
+#define MyAppVersion "0.1-alpha-4"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
+#define MyCatalogueSnapshotDate "20100909"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -87,7 +90,7 @@ OutputBaseFilename=mingw-get-inst
 SetupIconFile=msys.ico
 Compression=lzma
 SolidCompression=yes
-PrivilegesRequired=admin
+PrivilegesRequired=none
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -102,6 +105,7 @@ Name: {group}\MinGW Shell; Filename: {app}\msys\1.0\msys.bat; WorkingDir: {app}\
 Name: {group}\Uninstall mingw-get; Filename: {uninstallexe}; Comment: "Only removes the mingw-get tool; not MinGW"
 
 [Run]
+Filename: {app}\bin\mingw-get.exe; Parameters: update; Check: CheckUpdateCatalogues
 Filename: {app}\bin\mingw-get.exe; Parameters: {code:GetMinGWGetArgs}
 
 [Code]
@@ -116,6 +120,22 @@ var
   ObjC_Index: Integer;
   Ada_Index: Integer;
   Msys_Index: Integer;
+  MinGW_DTK_Index: Integer;
+  Msys_Dvlpr_Index: Integer;
+
+  AdminOrUserPage: TOutputMsgWizardPage;
+  UpdateCataloguesPage: TWizardPage;
+  UpdateCataloguesListBox: TNewCheckListBox;
+  UpdateCataloguesText: TNewStaticText;
+
+  YesUpdateRadioButton_Index: Integer;
+  NoUpdateRadioButton_Index: Integer;
+
+
+function IsAdmin(): Boolean;
+begin
+  Result := IsAdminLoggedOn or IsPowerUserLoggedOn;
+end;
 
 procedure CreateTheWizardPages;
 begin
@@ -137,6 +157,57 @@ begin
   ObjC_Index := CheckListBox.AddCheckBox('ObjC Compiler',    '', 1, False, True,  False, True, nil);
   Ada_Index :=  CheckListBox.AddCheckBox('Ada Compiler',     '', 1, False, True,  False, True, nil);
   Msys_Index := CheckListBox.AddCheckBox('MSYS Basic System','', 0, False, True,  False, False, nil);
+  MinGW_DTK_Index  := CheckListBox.AddCheckBox('MinGW Developer ToolKit',
+                                   'Includes MSYS Basic System', 0, False, True,  False, False, nil);
+  Msys_Dvlpr_Index := CheckListBox.AddCheckBox('MSYS System Builder',
+                                   'Not usually installed',      0, False, True,  False, False, nil);
+
+  { Create the Admin or User page }
+  if IsAdmin() then begin
+    AdminOrUserPage := CreateOutputMsgPage(wpWelcome,
+      'Administrator Install', 'You have launched this installer as an Administrator.',
+      'Shortcuts will be created in the All Users Start Menu and/or Desktop. To install ' +
+      'for yourself only, cancel this installation and relaunch without Administrative ' +
+      'privileges.');
+    end
+  else begin
+    AdminOrUserPage := CreateOutputMsgPage(wpWelcome,
+      'Regular User Install', 'You have launched this installer as normal (non-Administrator) user.',
+      'Shortcuts will be created in your Start Menu and/or Desktop. To install ' +
+      'for all users, cancel this installation and relaunch as an Administrator.');
+    end
+
+  { Create the Update Catalogues Page }
+  UpdateCataloguesPage := CreateCustomPage(AdminOrUserPage.ID, 'Repository Catalogues',
+     'Use pre-packaged catalogues or download the latest versions?');
+
+  UpdateCataloguesText := TNewStaticText.Create(UpdateCataloguesPage);
+  UpdateCataloguesText.AutoSize := False;
+  UpdateCataloguesText.Width := UpdateCataloguesPage.SurfaceWidth - ScaleX(8);
+  UpdateCataloguesText.Parent := UpdateCataloguesPage.Surface;
+  UpdateCataloguesText.WordWrap := True;
+  UpdateCataloguesText.Caption := 'The repository catalogues describe the packages and versions ' +
+    'available to be installed. This installer includes a snapshot of those catalogues, but they ' +
+    'may have been updated since this installer was created.  Choose whether to use the pre-packaged ' +
+    'snapshot, or to download the latest versions.';
+  UpdateCataloguesText.AdjustHeight();
+
+  UpdateCataloguesListBox := TNewCheckListBox.Create(UpdateCataloguesPage);
+  UpdateCataloguesListBox.Top := UpdateCataloguesText.Top + UpdateCataloguesText.Height + ScaleY(8);
+  UpdateCataloguesListBox.BorderStyle := bsNone;
+  UpdateCataloguesListBox.ParentColor := True;
+  UpdateCataloguesListBox.MinItemHeight := WizardForm.TasksList.MinItemHeight;
+  UpdateCataloguesListBox.ShowLines := False;
+  UpdateCataloguesListBox.WantTabs := True;
+  UpdateCataloguesListBox.Parent := UpdateCataloguesPage.Surface;
+  UpdateCataloguesListBox.Width := UpdateCataloguesPage.SurfaceWidth - ScaleX(8);
+
+  NoUpdateRadioButton_Index  := UpdateCataloguesListBox.AddRadioButton(
+      'Use pre-packaged repository catalogues',
+      '{#emit MyCatalogueSnapshotDate}', 0, True, True, nil);
+  YesUpdateRadioButton_Index := UpdateCataloguesListBox.AddRadioButton(
+      'Download latest repository catalogues', '', 0, False, True, nil);
+
 end;
 
 procedure InitializeWizard;
@@ -177,12 +248,25 @@ begin
   if CheckListBox.Checked[Msys_Index] then begin
     args := args +  'msys-base ';
   end
+  if CheckListBox.Checked[MinGW_DTK_Index] then begin
+    args := args +  'mingw-dtk ';
+  end
+  if CheckListBox.Checked[Msys_Dvlpr_Index] then begin
+    args := args +  'msys-dvlpr ';
+  end
   Result := args;
 end;
 
 function CheckMSYSSelected: Boolean;
 begin
-  Result := CheckListBox.Checked[Msys_Index];
+  Result := CheckListBox.Checked[Msys_Index] or
+            CheckListBox.Checked[MinGW_DTK_Index] or
+            CheckListBox.Checked[Msys_Dvlpr_Index];
+end;
+
+function CheckUpdateCatalogues: Boolean;
+begin
+  Result := UpdateCataloguesListBox.Checked[YesUpdateRadioButton_Index];
 end;
 
 function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo,
@@ -214,9 +298,27 @@ begin
   if CheckListBox.Checked[Ada_Index] then begin
     S := S + Space + 'Ada Compiler' + NewLine;
   end
-  if CheckListBox.Checked[Msys_Index] then begin
+
+  { If any of the MSYS-related packages are installed... }
+  if CheckMSYSSelected() then begin
     S := S + Space + 'MSYS Basic System' + NewLine;
   end
+
+  if CheckListBox.Checked[MinGW_DTK_Index] then begin
+    S := S + Space + 'MinGW Developer Toolkit' + NewLine;
+  end
+  if CheckListBox.Checked[Msys_Dvlpr_Index] then begin
+    S := S + Space + 'MSYS System Builder' + NewLine;
+  end
+  S := S + NewLine;
+
+  if CheckUpdateCatalogues() then begin
+    S := S + 'Downloading latest repository catalogues' + NewLine;
+    end
+  else begin
+    S := S + 'Using pre-packaged repository catalogues (' +
+         '{#emit MyCatalogueSnapshotDate}' + ')' + NewLine;
+    end
   S := S + NewLine;
 
   S := S + MemoDirInfo + NewLine;

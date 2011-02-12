@@ -1,0 +1,37 @@
+2010-09-09  Charles Wilson  <...>
+
+	20100909 release (add support for mingw-dtk, msys-sys-bld)
+	* RELEASE_NOTES.txt: Reformat. Mention new MinGW DTK and
+	MSYS System Builder choices.
+	* mingw-get-inst.iss: Use mingw-get-0.1-alpha-4. Update
+	catalogue snapshot date; add support for (optionally) updating
+	the catalogue. Add items to selection window for MinGW DTK and
+	MSYS System Builder. Remove requirement for Administrator
+	privileges; warn user about All Users/Self Only choice.
+	[Setup] (PrivilegesRequired): New global variable.
+	[Run] (Filename): Add new Checked entry for running mingw-get
+	in update catalogue mode, before running it "for real".
+	[Code] (MinGW_DTK_Index, Msys_Dvlpr_Index, YesUpdateRadioButton_Index,
+	NoUpdateRadioButton_Index): New global pascal vars.
+	[Code] (AdminOrUserPage, UpdateCataloguesPage): New pages.
+	[Code] (UpdateCataloguesListBox, UpdateCataloguesText): New elements
+	for UpdateCataloguesPage.
+	[Code] (IsAdmin): New function.
+	[Code] (CreateTheWizardPages): Add selection items to check box
+	corresponging to MinGW DTK and MSYS Sys Bldr choices.  Create the
+	AdminOrUserPage. Create the UpdateCataloguesPage.
+	[Code] (GetMinGWGetArgs): Handle mingw-dtk and msys-dvlpr selections.
+	[Code] (CheckMSYSSelected): Also return true if mingw-dtk or
+	msys-dvlpr were selected, in addition to msys(base).
+	[Code] (CheckUpdateCatalogues): New function to report check box
+	selection.
+	[Code] (UpdateReadyMemo): Update with information regarding mingw-dtk,
+	msys-dvlpr, and update catalogues.
+
+2010-08-31  Charles Wilson  <...>
+
+	20100831 initial release
+	* mingw-get-inst.iss: New file.
+	* msys.ico: New file.
+	* RELEASE_NOTES.txt: New file.
+
