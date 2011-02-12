@@ -1,0 +1,110 @@
+mingw-get-inst is a simple InnoSetup GUI installer that (indirectly) installs
+MinGW and MSYS.  It actually only installs the new `mingw-get' executable and
+its support files---and then invokes that program to handle the actual
+installation.
+
+During the GUI phase of the installation, you may select which elements you
+wish to install, from the following list:
+
+   MinGW Compiler Suite
+      C Compiler             always installed
+      C++ Compiler           optional
+      Fortran Compiler       optional
+      ObjC Compiler          optional
+      Ada Compiler           optional
+   MSYS Basic System         optional
+   MinGW Developer Toolkit   optional
+
+After the GUI phase of the installation is complete, mingw-get will be
+invoked to download and install all of the selected components.
+
+Once installation is complete, you can update to any available newer version
+of the available components, or add additional components, by performing the
+following steps:
+
+   cd C:\MinGW\bin (or whereever mingw-get.exe is located)
+   mingw-get update
+   mingw-get install <... package names ...>
+
+The 'update' command updates the local copy of the package information
+database.  This version of mingw-get-inst ships with a snapshot of that
+database, from 2011 Feb 11. (During the GUI phase of the installation, you
+will be given the option of automatically updating the database to the
+latest version, or using the pre-packaged snapshot).
+
+If there are any issues with this installer or with mingw-get, please report
+problems to
+   mingw-users@lists.sourceforge.net
+After triage, you may be asked to open an official bug report by following
+the instructions here:
+   http://www.mingw.org/reporting_bugs
+
+
+Changes
+==========
+20110211:
+	* Ship with mingw-get-0.1-alpha-5.1.  This is a bug-fix release to
+	  correct a critical defect in the resolution of dependencies, when
+	  performing an upgrade operation.  It also provides more meaningful
+	  diagnostics when mingw-get is invoked without arguments.
+
+	* Remove 'MSYS System Builder' from GUI selection dialog. Too
+	  many novice users were installating it without understanding
+	  its purpose, leading to a lot of confusion on the mailing list.
+
+	  ************************************************************
+	  ** Most people should not install the MSYS System Builder **
+	  ** It is for building MSYS applications and libraries.    **
+	  ** As most users want to build MinGW (that is, native     **
+	  ** win32) applications and libraries, it is inappropriate **
+	  ** to install the MSYS System Builder.  However, if you   **
+	  ** really want to install it, use the command line tool   **
+	  **         'mingw-get install msys-dvlpr'                 **
+	  ** AFTER you install the other components using this GUI  **
+	  ** installation process. But DO NOT DO THIS unless you    **
+	  ** really understand the implications.                    **
+	  ************************************************************
+
+	* Update catalogue to 2011-02-11; update documentation to reflect
+	  availability of new MinGW gcc version 4.5.2.
+
+20101030:
+	* Ship with mingw-get-0.1-alpha-5; this provides a more robust
+	  solution to the "mingw-get deleted itself" problem, together
+	  with a workaround to avoid a race condition in this installer
+	  itself.
+
+20100909:
+	* Ship with mingw-get-0.1-alpha-4, which fixes the "mingw-get deleted
+	  itself" problem and adds a --help option.
+	* Now also (optionally) install the MinGW Developer Toolkit and/or
+	  MSYS System Builder meta package collections.
+	* No longer requires Admin privileges
+	* Optionally run 'mingw-get update' to download the most recent set of
+	  package metadata before performing the installation.
+
+20100831:
+	* Initial release
+
+
+Background
+==========
+mingw-get is the actual MinGW installer. It supports multiple installation
+locations on a single computer, multiple repositories and handles dependency
+relationships between elements.  However, it is still a work in progress---and
+many potential users are intimidated by it, because it is a command line
+application and requires some configuration file editing before it can be used.
+
+mingw-get is structured as a library that contains all of the core
+implementation logic, and a command-line interface (CLI) front end executable.
+Eventually, that CLI application will be superseded by a GUI front end---once
+the development of the back end implementation logic and library is complete.
+However, the CLI mingw-get is usuable today, for simple installations.
+
+mingw-get-inst is NOT the GUI version of mingw-get. Rather, it is a quick and
+dirty InnoSetup wrapper that installs the CUI mingw-get, modifies the
+configuration files as needed automatically, and invokes mingw-get with the
+appropriate arguments to handle the actual installation.  We expect that
+mingw-get-inst will be obsoleted once the GUI version of mingw-get is released,
+but that may be some time from now.
+
