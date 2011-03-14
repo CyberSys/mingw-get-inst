@@ -28,7 +28,7 @@ following steps:
 
 The 'update' command updates the local copy of the package information
 database.  This version of mingw-get-inst ships with a snapshot of that
-database, from 2011 Feb 11. (During the GUI phase of the installation, you
+database, from 2011 Mar 13. (During the GUI phase of the installation, you
 will be given the option of automatically updating the database to the
 latest version, or using the pre-packaged snapshot).
 
@@ -42,6 +42,33 @@ the instructions here:
 
 Changes
 ==========
+20110313:
+	* Ship with mingw-get-0.2-alpha-1.  This new release adds the following
+	  new features and improvements.  For more information (and current
+	  limitations) see the NEWS file in the mingw-get source package, or
+	  the following readme.txt file:
+	  http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get/mingw-get-0.2-alpha-1/
+
+	  -- remove --
+	     PROVISIONAL support for removal of packages which have been
+	     previously installed. (WARNING: 'mingw-get remove foo' WILL remove
+	     all files associated with package 'foo', even if some other package
+	     'bar' may depend on them.
+	  -- upgrade --
+	     The upgrade operation is now implemented as a 'remove' as described
+	     above, followed by an 'install'.
+	  -- list, show --
+	     Preliminary support for the list operation, which allows to list
+	     the description text for a specific package, or to show a list of all
+	     available packages.  'show' is currently a synonym for 'list'.
+
+	* Update catalogue to 2011-03-13.
+
+	* mingw-get is added to the initial installation list.  This rather odd
+	  step is required to "prime the pump" -- it establishes an installation
+	  record for the mingw-get package ITSELF, so that in the future, mingw-get
+	  will be able to upgrade itself if necessary.
+
 20110211:
 	* Ship with mingw-get-0.1-alpha-5.1.  This is a bug-fix release to
 	  correct a critical defect in the resolution of dependencies, when
