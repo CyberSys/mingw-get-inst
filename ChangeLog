@@ -1,3 +1,12 @@
+2011-03-16  Charles Wilson  <...>
+
+	201103116 release (update mingw-get; install pkginfo)
+	* RELEASE_NOTES.txt; Document changes.
+	* mingw-get-inst.iss: Use mingw-get-0.2-alpha-2. Update
+	catalogue snapshot date.
+	[GetMinGWGetArgs]: Add pkginfo to list of components to be installed.
+	[UpdateReadyMemo]: Inform user that pkginfo will be installed.
+
 2011-03-13  Charles Wilson  <...>
 
 	201103113 release (update mingw-get; install mingw-get)

@@ -1,5 +1,5 @@
 ; This InnoSetup installer script is
-; Copyright (c) 2010 Charles S. Wilson
+; Copyright (c) 2010,2011 Charles S. Wilson
 ;
 ; Permission is hereby granted, free of charge, to any person obtaining a
 ; copy of this software and associated documentation files (the "Software"),
@@ -26,7 +26,7 @@
 ; To build this installer, first download mingw-get itself, and unpack into
 ; the _inst subdirectory of the directory in which this file is located.
 ;
-;   $ V=0.2-mingw32-alpha-1
+;   $ V=0.2-mingw32-alpha-2
 ;   $ S=http://downloads.sourceforge.net/mingw
 ;   $ rm -rf _inst && mkdir _inst
 ;   $ for f in mingw-get-$V-bin.tar.gz mingw-get-$V-lic.tar.gz pkginfo-$V-bin.tar.gz; do
@@ -57,10 +57,10 @@
 ; the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.2-alpha-1"
+#define MyAppVersion "0.2-alpha-2"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
-#define MyCatalogueSnapshotDate "20110313"
+#define MyCatalogueSnapshotDate "20110316"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -210,7 +210,7 @@ var
   args: String;
 begin
   { Return the selected DataDir }
-  args := 'install mingw-get base ';
+  args := 'install mingw-get pkginfo base ';
 
   { Don't need to do this, because 'base' takes care of it }
   { if CheckListBox.Checked[C_Index] then begin }
@@ -264,6 +264,7 @@ begin
   S := '';
   S := S + 'Installing:' + NewLine;
   S := S + Space + 'mingw-get' + NewLine;
+  S := S + Space + 'pkginfo' + NewLine;
   if CheckListBox.Checked[C_Index] then begin
     S := S + Space + 'C Compiler' + NewLine;
   end;
