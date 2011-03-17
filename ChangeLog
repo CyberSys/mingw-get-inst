@@ -1,7 +1,12 @@
 2011-03-16  Charles Wilson  <...>
 
+	201103116 release (for real)
+	* RELEASE_NOTES.txt: Reflow paragraphs to not exceed 80 char.
+
+2011-03-16  Charles Wilson  <...>
+
 	201103116 release (update mingw-get; install pkginfo)
-	* RELEASE_NOTES.txt; Document changes.
+	* RELEASE_NOTES.txt: Document changes.
 	* mingw-get-inst.iss: Use mingw-get-0.2-alpha-2. Update
 	catalogue snapshot date.
 	[GetMinGWGetArgs]: Add pkginfo to list of components to be installed.
