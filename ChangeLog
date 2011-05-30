@@ -1,3 +1,14 @@
+2011-05-30  Charles Wilson  <...>
+
+	20110530 release
+	* mingw-get-inst.iss: Use mingw-get-0.3-alpha-1. Update
+	catalogue snapshot date.
+	[CreateTheWizardPages]: Comment out Ada support, as upcoming
+	gcc-4.6.0 will temporarily omit that language.
+	[GetMinGWGetArgs]: Ditto.
+	[UpdateReadyMemo]: Ditto.
+	* RELEASE_NOTES.txt: Document changes.
+
 2011-03-16  Charles Wilson  <...>
 
 	201103116 release (for real)

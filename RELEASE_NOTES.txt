@@ -11,7 +11,6 @@ wish to install, from the following list:
       C++ Compiler           optional
       Fortran Compiler       optional
       ObjC Compiler          optional
-      Ada Compiler           optional
    MSYS Basic System         optional
    MinGW Developer Toolkit   optional
 
@@ -28,7 +27,7 @@ following steps:
 
 The 'update' command updates the local copy of the package information
 database.  This version of mingw-get-inst ships with a snapshot of that
-database, from 2011 Mar 16. (During the GUI phase of the installation, you
+database, from 2011 May 30. (During the GUI phase of the installation, you
 will be given the option of automatically updating the database to the
 latest version, or using the pre-packaged snapshot).
 
@@ -42,6 +41,28 @@ the instructions here:
 
 Changes
 ==========
+20110530:
+	* Ship with mingw-get-0.3-alpha-1.  This feature enhancement
+	  release provides new features to accord package maintainers 
+	  greater flexibility in the identification of development
+	  progression within package names; as such it is likely to be
+	  the earliest mingw-get release which will support delivery of
+	  the next GCC release.
+
+	  This release also accords greater control to the user, over the
+	  verbosity of progress reporting and debugging diagnostics, at
+	  run time.
+	* Update catalogue to 2011-05-30.
+	* Remove 'Ada' from MinGW component list. The upcoming gcc-4.6.x
+	  release will (temporarily) omit Ada, so to avoid confusion in
+	  this GUI it is removed from the list of choices.  Those who
+	  require Ada and are content to use the gcc-4.3.4 package set
+	  should contact the mailing list for assistance.  However, the
+	  following command MAY be enough to get you started:
+	  	mingw-get install gcc-ada
+	* (internal): Built using InnoSetup 5.4.2 (ANSI); previous versions
+	  were built using InnoSetup 5.3.10 (ANSI).
+
 20110316:
 	* Ship with mingw-get-0.2-alpha-2.  This bugfix release corrects
 	  MinGW‐Bug 3212246; this was a serious bug which, under certain
