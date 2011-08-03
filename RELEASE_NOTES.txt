@@ -27,7 +27,7 @@ following steps:
 
 The 'update' command updates the local copy of the package information
 database.  This version of mingw-get-inst ships with a snapshot of that
-database, from 2011 May 30. (During the GUI phase of the installation, you
+database, from 2011 Aug 02. (During the GUI phase of the installation, you
 will be given the option of automatically updating the database to the
 latest version, or using the pre-packaged snapshot).
 
@@ -41,6 +41,18 @@ the instructions here:
 
 Changes
 ==========
+20110802:
+	* Ship with mingw-get-0.3-alpha-2.1.  This bugfix release corrects
+          critical defect in the version matching code within mingw-get's
+          dependency resolver, which resulted in failure of wild card tokens
+          in a requirements specification to match an actual package version,
+          where that version was qualified by a release status descriptor,
+          (such as "alpha", "beta", "pre", etc.). Therefore, this version of
+          mingw-get is a mandatory prerequisite upgrade for all users who may
+          wish to install and deploy the upcoming MinGW GCC-4.6 pre-release
+          packages using mingw-get.
+	* Update catalogue to 2011-08-02.
+
 20110530:
 	* Ship with mingw-get-0.3-alpha-1.  This feature enhancement
 	  release provides new features to accord package maintainers 

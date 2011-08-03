@@ -1,3 +1,10 @@
+2011-08-02  Charles Wilson  <...>
+
+	20110802 release
+	* mingw-get-inst.iss: Use mingw-get-0.3-alpha-2.1. Update
+	catalogue snapshot date.
+	* RELEASE_NOTES.txt: Document changes.
+
 2011-05-30  Charles Wilson  <...>
 
 	20110530 release

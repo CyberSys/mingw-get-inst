@@ -26,7 +26,7 @@
 ; To build this installer, first download mingw-get itself, and unpack into
 ; the _inst subdirectory of the directory in which this file is located.
 ;
-;   $ V=0.3-mingw32-alpha-1
+;   $ V=0.3-mingw32-alpha-2.1
 ;   $ S=http://downloads.sourceforge.net/mingw
 ;   $ rm -rf _inst && mkdir _inst
 ;   $ for f in mingw-get-$V-bin.tar.gz mingw-get-$V-lic.tar.gz pkginfo-$V-bin.tar.gz; do
@@ -60,10 +60,10 @@
 ; update the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.3-alpha-1"
+#define MyAppVersion "0.3-alpha-2.1"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
-#define MyCatalogueSnapshotDate "20110530"
+#define MyCatalogueSnapshotDate "20110802"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
