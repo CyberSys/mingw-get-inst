@@ -26,10 +26,10 @@
 ; To build this installer, first download mingw-get itself, and unpack into
 ; the _inst subdirectory of the directory in which this file is located.
 ;
-;   $ V=0.3-mingw32-alpha-2.1
+;   $ V=0.4-mingw32-alpha-1
 ;   $ S=http://downloads.sourceforge.net/mingw
 ;   $ rm -rf _inst && mkdir _inst
-;   $ for f in mingw-get-$V-bin.tar.gz mingw-get-$V-lic.tar.gz pkginfo-$V-bin.tar.gz; do
+;   $ for f in mingw-get-$V-bin.tar.xz mingw-get-$V-lic.tar.xz pkginfo-$V-bin.tar.xz; do
 ;       wget --no-check-certificate $S/$f
 ;       tar -C _inst -xf $f
 ;     done
@@ -60,10 +60,12 @@
 ; update the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.3-alpha-2.1"
+#define MyAppVersion "0.4-alpha-1"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
-#define MyCatalogueSnapshotDate "20110802"
+#define MyCatalogueSnapshotDate "20111118"
+#define MyInitLogPath "\var\log\mingw-get-log.orig.txt"
+#define MyLogPath "\var\log\mingw-get-log.txt"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -94,6 +96,14 @@ Name: english; MessagesFile: compiler:Default.isl
 [Files]
 Source: _inst\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: tee.exe; DestDir: {app}\libexec\mingw-get; Flags: ignoreversion
+Source: cleanfile.exe; DestDir: {app}\libexec\mingw-get; Flags: ignoreversion
+
+[Dirs]
+Name: {app}\var\log;
+
+[CustomMessages]
+LaunchProgram=Display mingw-get log (%1)
 
 [Icons]
 ; NOTE: only install shortcut to MSYS shell if msys was installed
@@ -101,8 +111,7 @@ Name: {group}\MinGW Shell; Filename: {app}\msys\1.0\msys.bat; WorkingDir: {app}\
 Name: {group}\Uninstall mingw-get; Filename: {uninstallexe}; Comment: "Only removes the mingw-get tool; not MinGW"
 
 [Run]
-Filename: {app}\bin\mingw-get.exe; Parameters: update; Check: CheckUpdateCatalogues
-Filename: {app}\bin\mingw-get.exe; Parameters: {code:GetMinGWGetArgs}
+Filename: {app}{#MyLogPath}; Description: {cm:LaunchProgram,{app}{#MyLogPath}}; Flags: shellexec skipifdoesntexist postinstall skipifsilent nowait
 
 [Code]
 var
@@ -142,7 +151,7 @@ begin
   CheckListBox.Flat := True;
   CheckListBox.Parent := Page.Surface;
   CheckListBox.AddCheckBox('MinGW Compiler Suite', '', 0, True, True, True, False, nil);
-  C_Index :=    CheckListBox.AddCheckBox('C Compiler',       '', 1, True,  False, False, False, nil);
+  C_Index :=    CheckListBox.AddCheckBox('C Compiler',       '', 1, True,  True,  False, True, nil);
   CXX_Index :=  CheckListBox.AddCheckBox('C++ Compiler',     '', 1, False, True,  False, True, nil);
 
   { FIXME: no java package at present }
@@ -209,43 +218,67 @@ begin
   CreateTheWizardPages
 end;
 
-function GetMinGWGetArgs(Param: String): String;
+function GetMinGWGetArgs(): String;
 var
   args: String;
 begin
   { Return the selected DataDir }
-  args := 'install mingw-get pkginfo base ';
+  args := 'install mingw-get pkginfo ';
 
-  { Don't need to do this, because 'base' takes care of it }
-  { if CheckListBox.Checked[C_Index] then begin }
-  {   args := args +  'gcc-core '; }
-  { end }
+  if CheckListBox.Checked[C_Index] then begin
+     args := args + 'base gcc-core ';
+  end;
 
   if CheckListBox.Checked[CXX_Index] then begin
-    args := args +  'gcc-g++ ';
+    if (Pos(' base ', args) <= 0) then begin
+      args := args + 'base gcc-g++ ';
+    end else begin
+      args := args + 'gcc-g++ ';
+    end;
   end;
 
   { FIXME: no java package at present }
   { if CheckListBox.Checked[Java_Index] then begin }
-  {   args := args +  'gcc-java '; }
-  { end }
+  {   if (Pos(' base ', args) <= 0) then begin }
+  {     args := args + 'base gcc-java '; }
+  {   end else begin }
+  {    args := args + 'gcc-java '; }
+  {   end; }
+  { end; }
 
   if CheckListBox.Checked[F_Index] then begin
-    args := args +  'gcc-fortran ';
+    if (Pos(' base ', args) <= 0) then begin
+      args := args + 'base gcc-fortran ';
+    end else begin
+      args := args + 'gcc-fortran ';
+    end;
   end;
+  
   if CheckListBox.Checked[ObjC_Index] then begin
-    args := args +  'gcc-objc ';
+    if (Pos(' base ', args) <= 0) then begin
+      args := args + 'base gcc-objc ';
+    end else begin
+      args := args + 'gcc-objc ';
+    end;
   end;
+  
   { FIXME: Ada package temporarily removed }
   { if CheckListBox.Checked[Ada_Index] then begin }
-  {  args := args +  'gcc-ada '; }
+  {   if (Pos(' base ', args) <= 0) then begin }
+  {     args := args + 'base gcc-ada '; }
+  {   end else begin }
+  {    args := args + 'gcc-ada '; }
+  {   end; }
   { end; }
+  
   if CheckListBox.Checked[Msys_Index] then begin
-    args := args +  'msys-base ';
+    args := args + 'msys-base ';
   end;
+  
   if CheckListBox.Checked[MinGW_DTK_Index] then begin
     args := args +  'mingw-dtk ';
   end;
+  
   Result := args;
 end;
 
@@ -316,7 +349,69 @@ begin
   Result := S;
 end;
 
-procedure DoPostInstall();
+function DoExecMingwGet(Args: String; Append: Boolean): Integer;
+var
+  WorkingDir:   String;
+  ReturnCode:   Integer;
+  LogFileName:  String;
+  TeeUtility:   String;
+  FullCmd:      String;
+begin
+  WorkingDir := ExpandConstant ('{app}\bin');
+  LogFileName := ExpandConstant ('{app}{#MyInitLogPath}');
+  TeeUtility := ExpandConstant ('{app}\libexec\mingw-get\tee.exe');
+  
+  FullCmd := ' /c mingw-get.exe ' + Args + ' 2>&1 | "' + TeeUtility + '"';
+  if (Append) then begin
+    FullCmd := FullCmd + ' -a "' + LogFileName + '"';
+  end else begin
+    FullCmd := FullCmd + ' "' + LogFileName + '"';
+  end;
+  
+  Log(ExpandConstant ('{%COMSPEC|cmd.exe}') + FullCmd);
+  if (not Exec (ExpandConstant ('{%COMSPEC|cmd.exe}'), FullCmd,
+            WorkingDir, SW_SHOW, ewWaitUntilTerminated, ReturnCode)) then
+  begin
+    {failed to even launch the command}
+    MsgBox(SysErrorMessage(ReturnCode), mbError, MB_OK);
+  end else if (ReturnCode <> 0) then
+  begin
+    MsgBox('Encountered an error executing mingw-get (' +
+      IntToStr(ReturnCode) + ')', mbError, MB_OK);
+  end;
+  Result := ReturnCode;
+end;
+
+procedure DoCleanLog();
+var
+  WorkingDir:        String;
+  InitLogFileName:   String;
+  FinalLogFileName:  String;
+  CleanUtility:      String;
+  FullCmd:           String;
+  ReturnCode:        Integer;
+begin
+  WorkingDir := ExpandConstant ('{app}\libexec\mingw-get');
+  InitLogFileName := ExpandConstant ('{app}{#MyInitLogPath}');
+  FinalLogFileName := ExpandConstant ('{app}{#MyLogPath}');
+  CleanUtility := ExpandConstant ('{app}\libexec\mingw-get\cleanfile.exe');
+  
+  FullCmd := ' "' + InitLogFileName + '" "' + FinalLogFileName + '"';
+  
+  Log(CleanUtility + FullCmd);
+  if (not Exec (CleanUtility, FullCmd, WorkingDir, SW_SHOW,
+                ewWaitUntilTerminated, ReturnCode)) then
+  begin
+    {failed to even launch the command}
+    MsgBox(SysErrorMessage(ReturnCode), mbError, MB_OK);
+  end else if (ReturnCode <> 0) then
+  begin
+    MsgBox('Encountered an error cleaning log file (' +
+      IntToStr(ReturnCode) + ')', mbError, MB_OK);
+  end;
+end;
+
+procedure DoFstabEntries();
 var
   fstabFileName: String;
   fstabEntry: String;
@@ -329,10 +424,30 @@ begin
   end
 end;
 
+procedure DoPostInstall();
+var
+  ReturnCode1:   Integer;
+  ReturnCode2:   Integer;
+begin
+  ReturnCode1 := 0;
+  ReturnCode2 := 0;
+  if CheckUpdateCatalogues() then
+  begin
+    ReturnCode1 := DoExecMingwGet('update',False);
+    ReturnCode2 := DoExecMingwGet(GetMinGWGetArgs(),True);
+  end else begin
+    ReturnCode1 := DoExecMingwGet(GetMinGWGetArgs(),False);
+  end;
+  { should actually DO something with ReturnCodes here }
+  DoCleanLog();
+  DoFstabEntries();
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
-  if CurStep = ssPostInstall then
+  if (ssPostInstall = CurStep) then
   begin
     DoPostInstall();
   end;
 end;
+

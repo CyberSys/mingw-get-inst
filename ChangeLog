@@ -1,3 +1,33 @@
+2011-08-18  Charles Wilson  <...>
+
+	20111118 release
+	* Makefile: New file.
+	* tee.c: New file.
+	* cleanfile.c: New file.
+	* mingw-get-inst.iss: Use mingw-get-0.4-alpha-1. Update
+	catalogue snapshot date.
+	[Files]: Add new helper applications tee and cleanfile.
+	[Dirs]: New section; add {app}\var\log.
+	[CustomMessages]: New section; add entry for showing log file.
+	[Run]: Don't run mingw-get here; do so from [Code]. Add new
+	postinstall entry for showing logfile.
+	(CreateTheWizardPages): Make C Compiler optional.
+	(GetMinGWGetArgs): Change signature, as no longer called from [Run].
+	Ripple from no longer requiring C Compiler to be checked: any other
+	compiler selected must now ensure 'base' is installed (but only want
+	'base' to appear once in args).
+	(DoExecMingwGet): New function launches mingw-get with specified
+	arguments, logs output via new tee utility, and handles any errors.
+	(DoCleanLog): New function 'cleans up' log file by launching new
+	cleanfile utility, and handles any errors.
+	(DoPostInstall): Invoke mingw-get here via DoExecMingwGet rather than
+	from [Run].  (Do so once or twice, depending on whether catalogue
+	update is selected). Then, clean up the log file via DoCleanLog before
+	establishing any /etc/fstab entries.
+	(CurStepChanged): Reverse order of variable equality comparison,
+	following Pascal convention.
+	* RELEASE_NOTES.txt: Document changes.
+
 2011-08-02  Charles Wilson  <...>
 
 	20110802 release

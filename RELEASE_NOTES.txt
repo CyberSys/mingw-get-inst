@@ -7,12 +7,15 @@ During the GUI phase of the installation, you may select which elements you
 wish to install, from the following list:
 
    MinGW Compiler Suite
-      C Compiler             always installed
+      C Compiler             optional (*)
       C++ Compiler           optional
       Fortran Compiler       optional
       ObjC Compiler          optional
    MSYS Basic System         optional
    MinGW Developer Toolkit   optional
+
+(*) Note that if any component of the compiler suite is selected, then
+    the C Compiler component is also installed, whether selected or not.
 
 After the GUI phase of the installation is complete, mingw-get will be
 invoked to download and install all of the selected components.
@@ -27,7 +30,7 @@ following steps:
 
 The 'update' command updates the local copy of the package information
 database.  This version of mingw-get-inst ships with a snapshot of that
-database, from 2011 Aug 02. (During the GUI phase of the installation, you
+database, from 2011 Nov 18. (During the GUI phase of the installation, you
 will be given the option of automatically updating the database to the
 latest version, or using the pre-packaged snapshot).
 
@@ -41,6 +44,23 @@ the instructions here:
 
 Changes
 ==========
+20111118:
+	* Ship with mingw-get-0.4-alpha-1. This release fixes a critical
+	  bug in the upgrade code, whereby an existing DLL could be replaced
+	  by an alternative with an incompatible ABI version, where the
+	  correct action is to install both concurrently. It also adds
+	  several new features, including anonymous upgrade, the 'source'
+	  and 'license' actions; and the new --print-uris, --download-only,
+	  and --all-related options. For more information on these new
+	  features, see the NEWS items listed here:
+	  http://sourceforge.net/projects/mingw/files/Installer/mingw-get/mingw-get-0.4-alpha-1/
+	* mingw-get-inst now allows to install MSYS alone, without
+	  automatically installing the MinGW C compiler.
+	* mingw-get-inst now logs the output of mingw-get. The log is
+	  stored in <top>/var/log/mingw-get-log.txt, and may optionally
+	  be displayed when mingw-get-inst is finished.
+	* Update catalogue to 2011-11-17.
+
 20110802:
 	* Ship with mingw-get-0.3-alpha-2.1.  This bugfix release corrects
           critical defect in the version matching code within mingw-get's
