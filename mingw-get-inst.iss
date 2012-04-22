@@ -1,5 +1,5 @@
 ; This InnoSetup installer script is
-; Copyright (c) 2010,2011 Charles S. Wilson
+; Copyright (c) 2010,2011,2012 Charles S. Wilson
 ;
 ; Permission is hereby granted, free of charge, to any person obtaining a
 ; copy of this software and associated documentation files (the "Software"),
@@ -26,7 +26,7 @@
 ; To build this installer, first download mingw-get itself, and unpack into
 ; the _inst subdirectory of the directory in which this file is located.
 ;
-;   $ V=0.4-mingw32-alpha-1
+;   $ V=0.5-mingw32-beta-20120416-1
 ;   $ S=http://downloads.sourceforge.net/mingw
 ;   $ rm -rf _inst && mkdir _inst
 ;   $ for f in mingw-get-$V-bin.tar.xz mingw-get-$V-lic.tar.xz pkginfo-$V-bin.tar.xz; do
@@ -43,6 +43,8 @@
 ; And, for good measure:
 ;
 ;   $ chmod +x _inst/libexec/mingw-get/mingw-get-0.dll
+;   $ chmod +x _inst/libexec/mingw-get/*.js
+;   $ chmod +x _inst/libexec/mingw-get/*.lua
 ;
 ; Now, you should be able to do the following
 ;
@@ -60,10 +62,10 @@
 ; update the MyCatalogueSnapshotDate macro, below.
 
 #define MyAppName "MinGW-Get"
-#define MyAppVersion "0.4-alpha-1"
+#define MyAppVersion "0.5-beta-20120416-1"
 #define MyAppPublisher "MinGW"
 #define MyAppURL "http://www.mingw.org/"
-#define MyCatalogueSnapshotDate "20111118"
+#define MyCatalogueSnapshotDate "20120421"
 #define MyInitLogPath "\var\log\mingw-get-log.orig.txt"
 #define MyLogPath "\var\log\mingw-get-log.txt"
 
@@ -159,8 +161,7 @@ begin
 
   F_index :=    CheckListBox.AddCheckBox('Fortran Compiler', '', 1, False, True,  False, True, nil);
   ObjC_Index := CheckListBox.AddCheckBox('ObjC Compiler',    '', 1, False, True,  False, True, nil);
-  { FIXME: Ada will be (temporarily) removed in 4.6.x }
-  { Ada_Index :=  CheckListBox.AddCheckBox('Ada Compiler',     '', 1, False, True,  False, True, nil); }
+  Ada_Index :=  CheckListBox.AddCheckBox('Ada Compiler',     '', 1, False, True,  False, True, nil);
   Msys_Index := CheckListBox.AddCheckBox('MSYS Basic System','', 0, False, True,  False, False, nil);
   MinGW_DTK_Index  := CheckListBox.AddCheckBox('MinGW Developer ToolKit',
                                    'Includes MSYS Basic System', 0, False, True,  False, False, nil);
@@ -262,14 +263,13 @@ begin
     end;
   end;
   
-  { FIXME: Ada package temporarily removed }
-  { if CheckListBox.Checked[Ada_Index] then begin }
-  {   if (Pos(' base ', args) <= 0) then begin }
-  {     args := args + 'base gcc-ada '; }
-  {   end else begin }
-  {    args := args + 'gcc-ada '; }
-  {   end; }
-  { end; }
+  if CheckListBox.Checked[Ada_Index] then begin
+    if (Pos(' base ', args) <= 0) then begin
+      args := args + 'base gcc-ada ';
+    end else begin
+     args := args + 'gcc-ada ';
+    end;
+  end;
   
   if CheckListBox.Checked[Msys_Index] then begin
     args := args + 'msys-base ';
@@ -321,10 +321,9 @@ begin
   if CheckListBox.Checked[ObjC_Index] then begin
     S := S + Space + 'ObjC Compiler' + NewLine;
   end;
-  { FIXME: Ada package temporarily removed }
-  { if CheckListBox.Checked[Ada_Index] then begin }
-  {   S := S + Space + 'Ada Compiler' + NewLine; }
-  { end; }
+  if CheckListBox.Checked[Ada_Index] then begin
+    S := S + Space + 'Ada Compiler' + NewLine;
+  end;
 
   { If any of the MSYS-related packages are installed... }
   if CheckMSYSSelected() then begin

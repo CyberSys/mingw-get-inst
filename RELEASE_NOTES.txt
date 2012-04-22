@@ -11,6 +11,7 @@ wish to install, from the following list:
       C++ Compiler           optional
       Fortran Compiler       optional
       ObjC Compiler          optional
+      Ada Compiler           optional
    MSYS Basic System         optional
    MinGW Developer Toolkit   optional
 
@@ -44,6 +45,23 @@ the instructions here:
 
 Changes
 ==========
+20120421:
+	* Ship with mingw-get-0.5-beta-20120416-1. This release fixes a
+	  number of bugs and adds several new features. For a complete
+	  description, see http://tinyurl.com/cfhog7v .
+	  = Bugfix: #3416013: --reinstall and dependent packages
+	  = Bugfix: #3424406: install --reinstall performs an upgrade
+	  = New feature: Forced installation of a specified (non-current)
+            release.
+	  = New feature: Support for package maintainer scripted
+	    installation hooks.
+	  = New option: "--desktop"
+	  = New option: "--start-menu"
+	* With the release of gcc-4.6.2-1, the ability to install Ada
+	  from the GUI installer has been re-enabled.
+	* Update catalogue to 2012-04-21.
+
+ 
 20111118:
 	* Ship with mingw-get-0.4-alpha-1. This release fixes a critical
 	  bug in the upgrade code, whereby an existing DLL could be replaced

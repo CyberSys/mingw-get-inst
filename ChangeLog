@@ -1,3 +1,10 @@
+2012-04-21  Charles Wilson  <...>
+
+	20120421 release
+	* mingw-get-inst.iss:  Use mingw-get-0.5-beta-20120416-1. Update
+	catalogue snapshot date. Renable Ada.
+	* RELEASE_NOTES.txt: Update.
+
 2011-08-18  Charles Wilson  <...>
 
 	20111118 release
